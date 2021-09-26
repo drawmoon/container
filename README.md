@@ -268,7 +268,7 @@ docker create nginx
 `-it` 以交互模式运行容器，例如：`-it nginx bash`
 `--entrypoint` 镜像指定了 `ENTRYPOINT` 时，覆盖入口命令，例如：`-it --entrypoint bash nginx` \
 `-v` 挂载主机上的文件卷到容器内，例如：`-v /conf/nginx.conf:/etc/nginx/nginx.conf` \
-`--restart` 指定容器的重启策略，分别为：`no`、`always` 和 `on-failure`，例如：`--restart=always`
+`--restart` 指定容器退出时的重新启动策略，分别为：`no`、`always` 和 `on-failure`，例如：`--restart=always`
 
 > Windows 下挂载文件卷：`-v //D/nginx.conf:/etc/nginx/nginx.conf`
 
@@ -383,6 +383,12 @@ docker commit some-nginx drawmoon/nginx
 
 ```bash
 docker cp some-nginx:/app/myapp .
+```
+
+### 更新容器的配置
+
+```bash
+docker update --restart=always some-nginx
 ```
 
 ## 使用 Dockerfile 构建镜像
