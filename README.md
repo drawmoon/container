@@ -261,13 +261,14 @@ docker stats some-nginx
 docker create nginx
 ```
 
-`-p` 指定端口映射，映射一个端口到内部容器开放的网络端口，例如：`-p 3000:3000`\
-`--name` 指定容器的名称，例如：`--name some-nginx`\
-`-d` 标记容器为后台运行\
-`-e` 指定环境变量，例如：`-e ENV=xxx`\
+`-p` 指定端口映射，映射一个端口到内部容器开放的网络端口，例如：`-p 3000:3000` \
+`--name` 指定容器的名称，例如：`--name some-nginx` \
+`-d` 标记容器为后台运行 \
+`-e` 指定环境变量，例如：`-e ENV=xxx` \
 `-it` 以交互模式运行容器，例如：`-it nginx bash`
-`--entrypoint` 镜像指定了 `ENTRYPOINT` 时，覆盖入口命令，例如：`-it --entrypoint bash nginx`\
-`-v` 挂载主机上的文件卷到容器内，例如：`-v /conf/nginx.conf:/etc/nginx/nginx.conf`
+`--entrypoint` 镜像指定了 `ENTRYPOINT` 时，覆盖入口命令，例如：`-it --entrypoint bash nginx` \
+`-v` 挂载主机上的文件卷到容器内，例如：`-v /conf/nginx.conf:/etc/nginx/nginx.conf` \
+`--restart` 指定容器的重启策略，分别为：`no`、`always` 和 `on-failure`，例如：`--restart=always`
 
 > Windows 下挂载文件卷：`-v //D/nginx.conf:/etc/nginx/nginx.conf`
 
@@ -282,6 +283,8 @@ docker start some-nginx
 ```bash
 docker run nginx
 ```
+
+> 执行 `run` 命令时，同样也可以使用 `create` 的子命令。
 
 #### 重新启动容器
 
