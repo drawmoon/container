@@ -1,0 +1,33 @@
+version: "2"
+service: 
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+
+  obs:
+    image: minio/minio
+    volumes:
+      - /app/data:/tmp/data
+    environment:
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    ports:
+      - "9000:9000"
+    command: server /tmp/data
+    restart: always
+
+  nginx:
+    image: nginx
+    volunes:
+      - /app/conf/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+      - obs
+    restart: always

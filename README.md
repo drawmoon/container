@@ -603,24 +603,21 @@ docker-compose --version
 - `depends_on`: 告诉部署依赖的服务
 
 ```yml
-version: "3"
-services:
+version: "2"
+service: 
 
   db:
     image: postgres
-    # volumes: 
-    #   - /app/ioea/data/pgdata:/var/lib/postgresql-static/data
     environment:
       POSTGRES_PASSWORD: postgres
-      # PGDATA: /var/lib/postgresql-static/data
     ports:
       - "5432:5432"
     restart: always
 
   obs:
     image: minio/minio
-    # volumes:
-    #    - /tmp/data:/tmp/data
+    volumes:
+      - /app/data:/tmp/data
     environment:
       MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
       MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -629,35 +626,15 @@ services:
     command: server /tmp/data
     restart: always
 
-  app:
-    image: app
-    environment:
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_NAME: postgres
-      MINIO_END_POINT: obs
-      MINIO_PORT: 9000
-      MINIO_ROOT_USER: AKIAIOSFODNN7EXAMPLE
-      MINIO_ROOT_PASSWORD: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-      MINIO_USE_SSL: "false"
-    depends_on:
-      - db
-      - obs
-    restart: always
-
   nginx:
-    image: nginx:latest
-    volumes:
-      - /app/myapp/conf/nginx.conf:/etc/nginx/nginx.conf
-      # - /app/myapp/wwwroot:/usr/share/nginx/html
+    image: nginx
+    volunes:
+      - /app/conf/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
     depends_on:
       - db
       - obs
-      - app
     restart: always
 ```
 
