@@ -43,10 +43,12 @@ spec:
           env:
             - name: POSTGRES_PASSWORD
               value: postgres
+            - name: PGDATA
+              value: /var/lib/postgresql-static/data
           ports:
             - containerPort: 5432
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
+            - mountPath: /var/lib/postgresql-static/data
               name: postgres-data
       volumes:
         - name: postgres-data

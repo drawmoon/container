@@ -33,7 +33,7 @@ Docker 技术解决了应用的打包与交付问题，提供了只需一次打�
 
 ## 安装 Docker
 
-### Manjaro 环境下安装 Docker
+### Manjaro 安装 Docker
 
 ```bash
 sudo pacman -S docker
@@ -95,8 +95,8 @@ docker info
 docker images
 ```
 
-`-a` 列出所有镜像\
-`-f` 过滤镜像，例如：`-f name=nginx`\
+`-a` 列出所有镜像 \
+`-f` 过滤镜像，例如：`-f name=nginx` \
 `-q` 仅输出 ID 信息
 
 > 更多命令可以通过 `man docker-images` 查看
@@ -119,7 +119,7 @@ docker history nginx
 docker search nginx
 ```
 
-`-f` 过滤镜像，例如：`-f stars=10`\
+`-f` 过滤镜像，例如：`-f stars=10` \
 `--limit` 限制输出结果个数
 
 ### 拉取镜像
@@ -152,8 +152,8 @@ docker rmi nginx
 docker image prune
 ```
 
-`-a` 删除所有无用的镜像\
-`-filter` 过滤镜像\
+`-a` 删除所有无用的镜像 \
+`-filter` 过滤镜像 \
 `-f` 强制删除镜像
 
 ### 保存和载入镜像
@@ -170,7 +170,7 @@ docker save -o nginx.tar nginx
 docker save nginx > nginx.tar
 ```
 
-使用 `gzip` 进行压缩
+保存镜像时压缩包的体积
 
 ```bash
 docker save nginx | gzip > nginx.tar
@@ -209,7 +209,14 @@ docker login
 登录到指定镜像注册中心：
 
 ```bash
-docker login http://docker.k8s
+docker login http://192.168.10.229
+```
+
+`-u` 指定账号 \
+`-p` 指定密码
+
+```bash
+docker login http://192.168.10.229 -u admin -p 123456
 ```
 
 ### 推送镜像
@@ -228,7 +235,7 @@ docker push drawmoon/nginx
 docker ps
 ```
 
-`-a` 包含终止的容器\
+`-a` 包含终止的容器 \
 `-q` 仅输出 ID 信息
 
 #### 查看容器详情
@@ -314,8 +321,8 @@ docker stop some-nginx
 docker rm some-nginx
 ```
 
-`-f` 强制删除\
-`-l` 删除容器的连接，但不会删除容器\
+`-f` 强制删除 \
+`-l` 删除容器的连接，但不会删除容器 \
 `-v` 删除容器挂载的数据卷
 
 #### 清理容器
@@ -350,11 +357,11 @@ docker attach some-nginx
 docker exec -it some-nginx bash
 ```
 
-`-d` 在容器中后台执行命令\
-`-e` 指定环境变量\
-`-it` 以交互模式进入容器\
-`-u` 设置执行命令的用户\
-`--privileged` 分配最高权限，例如：`--privileged=true`\
+`-d` 在容器中后台执行命令 \
+`-e` 指定环境变量 \
+`-it` 以交互模式进入容器 \
+`-u` 设置执行命令的用户 \
+`--privileged` 分配最高权限，例如：`--privileged=true` \
 `--detach-keys` 指定退出 `exec` 的快捷键
 
 ### 导出容器
@@ -592,12 +599,10 @@ docker-compose --version
 
 ### Compose 模板文件
 
-新建 `docker-compose.yml` 文件，声明模版文件的版本为 `3`，模版文件中声明了 4 个服务，分别是 `db`、`obs`、`app`、`nginx`。
-
 - `image`: 指定服务拉取并运行的镜像
-- `volumes`: 配置挂载文件卷
 - `environment`: 配置服务的环境变量
 - `ports`: 配置服务对外暴露的端口
+- `volumes`: 配置挂载文件卷
 - `command`: 运行服务时执行的指令
 - `restart`: 指定是否在服务终止后自动重启服务
 - `depends_on`: 告诉部署依赖的服务
@@ -610,6 +615,9 @@ service:
     image: postgres
     environment:
       POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql-static/data
+    volumes: 
+      - /app/data/pgdata:/var/lib/postgresql-static/data
     ports:
       - "5432:5432"
     restart: always
@@ -822,37 +830,37 @@ Rancher UI 的默认端口是 `443`，访问 `https://localhost` 打开 Rancher 
 
 ```bash
 mirrors:
-  "docker.k8s":
+  "192.168.10.229":
     endpoint:
-      - "http://docker.k8s"
+      - "http://192.168.10.229"
 ```
 
 #### 有账号密码认证的私有镜像注册中心
 
 ```bash
 mirrors:
-  "docker.k8s":
+  "192.168.10.229":
     endpoint:
-      - "http://docker.k8s"
+      - "http://192.168.10.229"
 configs:
-  "docker.k8s":
+  "192.168.10.229":
   auth:
     username: admin
-    password: admin
+    password: 123456
 ```
 
 #### 使用 TLS
 
 ```bash
 mirrors:
-  "docker.k8s":
+  "192.168.10.229":
     endpoint:
-      - "https://docker.k8s"
+      - "https://192.168.10.229"
 configs:
-  "docker.k8s":
+  "192.168.10.229":
   auth:
     username: admin
-    password: admin
+    password: 123456
   tls:
     cert_file: /cert_file
     key_file: /key_file

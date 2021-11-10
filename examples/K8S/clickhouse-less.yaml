@@ -140,6 +140,7 @@ spec:
       targetPort: tcp
   selector:
     app: ck-node
+
 ---
 apiVersion: v1
 kind: Service
