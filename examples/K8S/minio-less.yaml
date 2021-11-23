@@ -1,24 +1,16 @@
 apiVersion: v1
-kind: Service
+kind: Namespace
 metadata:
   name: minio
   labels:
-    app: minio
-spec:
-  type: NodePort
-  ports:
-    - protocol: TCP
-      name: tcp
-      port: 9000
-      targetPort: 9000
-  selector:
-    app: minio
+    name: minio
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
+  namespace: minio
   labels:
     app: minio
 spec:
@@ -48,7 +40,9 @@ spec:
               value: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
           command: ["/usr/bin/minio", "server", "/data"]
           ports:
-            - containerPort: 9000
+            - name: minio-port
+              containerPort: 9000
+              protocol: TCP
           volumeMounts:
             - name: minio-data
               mountPath: /data
@@ -64,3 +58,21 @@ spec:
           #   monitors:
           #     - 192.168.1.1:6789
           #   user: admin
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: minio
+  labels:
+    app: minio
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      name: tcp
+      port: 9000
+      targetPort: minio-port
+  selector:
+    app: minio

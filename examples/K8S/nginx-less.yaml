@@ -1,7 +1,16 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-cm
+  namespace: nginx
 data:
   nginx-conf: |
     #user  nobody;
@@ -13,11 +22,9 @@ data:
 
     #pid        logs/nginx.pid;
 
-
     events {
         worker_connections  1024;
     }
-
 
     http {
         include       mime.types;
@@ -32,7 +39,6 @@ data:
         sendfile        on;
         #tcp_nopush     on;
 
-        #keepalive_timeout  0;
         keepalive_timeout  65;
 
         #gzip  on;
@@ -49,102 +55,17 @@ data:
                 root   html;
                 index  index.html index.htm;
             }
-
-            #error_page  404              /404.html;
-
-            # redirect server error pages to the static page /50x.html
-            #
-            error_page   500 502 503 504  /50x.html;
-            location = /50x.html {
-                root   html;
-            }
-
-            # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-            #
-            #location ~ \.php$ {
-            #    proxy_pass   http://127.0.0.1;
-            #}
-
-            # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-            #
-            #location ~ \.php$ {
-            #    root           html;
-            #    fastcgi_pass   127.0.0.1:9000;
-            #    fastcgi_index  index.php;
-            #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-            #    include        fastcgi_params;
-            #}
-
-            # deny access to .htaccess files, if Apache's document root
-            # concurs with nginx's one
-            #
-            #location ~ /\.ht {
-            #    deny  all;
-            #}
         }
-
-
-        # another virtual host using mix of IP-, name-, and port-based configuration
-        #
-        #server {
-        #    listen       8000;
-        #    listen       somename:8080;
-        #    server_name  somename  alias  another.alias;
-
-        #    location / {
-        #        root   html;
-        #        index  index.html index.htm;
-        #    }
-        #}
-
-
-        # HTTPS server
-        #
-        #server {
-        #    listen       443 ssl;
-        #    server_name  localhost;
-
-        #    ssl_certificate      cert.pem;
-        #    ssl_certificate_key  cert.key;
-
-        #    ssl_session_cache    shared:SSL:1m;
-        #    ssl_session_timeout  5m;
-
-        #    ssl_ciphers  HIGH:!aNULL:!MD5;
-        #    ssl_prefer_server_ciphers  on;
-
-        #    location / {
-        #        root   html;
-        #        index  index.html index.htm;
-        #    }
-        #}
-
     }
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: nginx
-  name: nginx
-spec:
-  type: NodePort
-  ports:
-    - name: "tcp"
-      protocol: TCP
-      port: 80
-      targetPort: 80
-  selector:
-    app: nginx
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: nginx
+  namespace: nginx
   labels:
     app: nginx
-  name: nginx
 spec:
   replicas: 1
   selector:
@@ -165,7 +86,9 @@ spec:
           image: nginx:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - name: nginx-port
+              containerPort: 80
+              protocol: TCP
           volumeMounts:
             - name: nginx-conf
               subPath: nginx.conf
@@ -178,3 +101,21 @@ spec:
             items:
               - key: nginx-conf
                 path: nginx.conf
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: nginx
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+    - name: "tcp"
+      protocol: TCP
+      port: 80
+      targetPort: nginx-port
+  selector:
+    app: nginx

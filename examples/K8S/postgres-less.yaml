@@ -1,26 +1,18 @@
 apiVersion: v1
-kind: Service
+kind: Namespace
 metadata:
-  labels:
-    app: postgres
   name: postgres
-spec:
-  type: NodePort
-  ports:
-    - name: "tcp"
-      protocol: TCP
-      port: 5432
-      targetPort: 5432
-  selector:
-    app: postgres
+  labels:
+    name: postgres
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: postgres
+  namespace: postgres
   labels:
     app: postgres
-  name: postgres
 spec:
   replicas: 1
   selector:
@@ -46,7 +38,9 @@ spec:
             - name: PGDATA
               value: /var/lib/postgresql-static/data
           ports:
-            - containerPort: 5432
+            - name: postgres-port
+              containerPort: 5432
+              protocol: TCP
           volumeMounts:
             - mountPath: /var/lib/postgresql-static/data
               name: postgres-data
@@ -62,3 +56,21 @@ spec:
           #   monitors:
           #     - 192.168.1.1:6789
           #   user: admin
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: postgres
+  labels:
+    app: postgres
+spec:
+  type: NodePort
+  ports:
+    - name: "tcp"
+      protocol: TCP
+      port: 5432
+      targetPort: postgres-port
+  selector:
+    app: postgres
