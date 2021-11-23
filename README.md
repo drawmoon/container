@@ -617,21 +617,30 @@ service:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql-static/data
     volumes: 
-      - /app/data/pgdata:/var/lib/postgresql-static/data
+      - /data/pgdata:/var/lib/postgresql-static/data
     ports:
       - "5432:5432"
     restart: always
 
   obs:
     image: minio/minio
-    volumes:
-      - /app/data:/tmp/data
+    command: server /tmp/data
     environment:
       MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
       MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    ports:
-      - "9000:9000"
-    command: server /tmp/data
+    volumes:
+      - /data:/tmp/data
+    restart: always
+
+  app:
+    image: app
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      OBS_HOST: obs
+      OBS_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      OBS_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     restart: always
 
   nginx:
@@ -643,6 +652,7 @@ service:
     depends_on:
       - db
       - obs
+      - app
     restart: always
 ```
 
