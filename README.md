@@ -291,7 +291,7 @@ docker start some-nginx
 docker run nginx
 ```
 
-> 执行 `run` 命令时，同样也可以使用 `create` 的子命令。
+> `run` 命令实际上是执行了 `create` 和 `start` 命令， 在执行 `run` 命令时，同样也可以使用 `create` 的子命令。
 
 #### 重新启动容器
 
