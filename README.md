@@ -599,87 +599,64 @@ docker-compose --version
 
 ### Compose 模板文件
 
-- `image`: 指定服务拉取并运行的镜像
-- `environment`: 配置服务的环境变量
-- `ports`: 配置服务对外暴露的端口
-- `volumes`: 配置挂载文件卷
-- `command`: 运行服务时执行的指令
-- `restart`: 指定是否在服务终止后自动重启服务
-- `depends_on`: 告诉部署依赖的服务
+编写 `docker-compose.yml` 文件，DockerCompose 默认识别该文件。
+
+拉取并运行 `nginx` 服务的示例：
 
 ```yml
-version: "2"
-service: 
-
-  db:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql-static/data
-    volumes: 
-      - /data/pgdata:/var/lib/postgresql-static/data
-    ports:
-      - "5432:5432"
-    restart: always
-
-  obs:
-    image: minio/minio
-    command: server /tmp/data
-    environment:
-      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
-      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    volumes:
-      - /data:/tmp/data
-    restart: always
-
-  app:
-    image: app
-    environment:
-      DB_HOST: db
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      OBS_HOST: obs
-      OBS_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
-      OBS_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    restart: always
+version: "3"
+services: 
 
   nginx:
     image: nginx
-    volunes:
-      - /app/conf/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
-    depends_on:
-      - db
-      - obs
-      - app
+    restart: always
+```
+
+构建应用并运行服务的示例：
+
+```yml
+version: "3"
+services: 
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
     restart: always
 ```
 
 ### 启动项目
 
-自动构建镜像、创建网络、创建并启动服务。
+自动构建镜像、创建网络、创建并启动服务：
 
 ```bash
 docker-compose up
 ```
 
-`-d` 可以使项目在后台运行
+后台运行：
 
 ```bash
 docker-compose up -d
 ```
 
-指定 docker-compose 配置文件
+指定 DockerCompose 配置文件：
 
 ```bash
-docker-compose -f docker-compose.yml up
+docker-compose -f docker-compose.production.yml up
 ```
 
-指定容器
+指定服务：
 
 ```bash
-docker-compose up -d <服务>
+docker-compose up nginx
+```
+
+重新构建：
+
+```bash
+docker-compose up --build
 ```
 
 ### 停止项目
@@ -690,7 +667,7 @@ docker-compose up -d <服务>
 docker-compose down
 ```
 
-### 列出项目所有的容器
+### 列出项目所有的服务
 
 ```bash
 docker-compose ps
@@ -699,67 +676,73 @@ docker-compose ps
 ### 查看服务的输出
 
 ```bash
-docker-compose logs <服务>
+docker-compose logs nginx
 ```
 
 `-f` 监听服务的输出
 
 ```bash
-docker-compose logs <服务> -f
+docker-compose logs nginx -f
 ```
 
 ### 进入到服务中
 
 ```bash
-docker-compose exec <服务> /bin/bash
+docker-compose exec nginx bash
 ```
 
 ### 启动服务
 
 ```bash
-docker-compose start <服务>
+docker-compose start nginx
 ```
 
 ### 重新启动服务
 
 ```bash
-docker-compose restart <服务>
+docker-compose restart nginx
 ```
 
 ### 停止正在运行的服务
 
 ```bash
-docker-compose stop <服务>
+docker-compose stop nginx
 ```
 
 ### 暂停服务
 
 ```bash
-docker-compose pause <服务>
+docker-compose pause nginx
 ```
 
 ### 恢复服务
 
 ```bash
-docker-compose unpause <服务>
+docker-compose unpause nginx
 ```
 
 ### 删除服务
 
 ```bash
-docker-compose rm <服务>
+docker-compose rm nginx
 ```
 
-### 构建服务
+### 构建项目
 
 ```bash
-docker-compose build <服务>
+docker-compose build
+```
+
+指定服务
+
+```bash
+docker-compose build nginx
 ```
 
 `--no-cache` 不使用缓存
 
 ```bash
-docker-compose build --no-cache <服务>
+docker-compose build --no-cache
 ```
 
 ## 企业级容器管理平台 Rancher
