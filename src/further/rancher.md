@@ -81,20 +81,17 @@ Rancher UI 的默认端口是 `443`，访问 `https://localhost` 打开 Rancher 
 
 在 Rancher 容器中 `/etc/rancher/k3s/` 目录下创建 `registries.yaml` 文件，例如：
 
-```bash
+```yaml
 mirrors:
   "192.168.10.229":
     endpoint:
       - "http://192.168.10.229"
 ```
 
-### 有账号密码认证的私有镜像注册中心
+### 配置认证信息
 
-```bash
-mirrors:
-  "192.168.10.229":
-    endpoint:
-      - "http://192.168.10.229"
+```yaml
+...
 configs:
   "192.168.10.229":
   auth:
@@ -102,13 +99,10 @@ configs:
     password: 123456
 ```
 
-### 使用 TLS
+使用 TLS
 
-```bash
-mirrors:
-  "192.168.10.229":
-    endpoint:
-      - "https://192.168.10.229"
+```yaml
+...
 configs:
   "192.168.10.229":
   auth:
