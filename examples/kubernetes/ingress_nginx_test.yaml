@@ -7,13 +7,7 @@ metadata:
   labels:
     app: myapp-ig
   annotations:
-    # 会话粘滞
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/affinity: cookie
-    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
-    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
-    nginx.ingress.kubernetes.io/session-cookie-name: http-cookie
-    # Nginx 配置
+    # 将片段添加至 `location` 段中
     nginx.ingress.kubernetes.io/configuration-snippet: |
       # 强制只允许GET、POST、HEAD请求
       if ($request_method !~ ^(GET|POST|HEAD)$ ) {
