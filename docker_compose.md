@@ -2,9 +2,10 @@
 
 - [简介](#简介)
 - [安装](#安装)
-- [配置模板](#配置模板)
+- [Composefile](#Composefile)
   - [拉取镜像运行服务](#拉取镜像运行服务)
   - [构建镜像运行服务](#构建镜像运行服务)
+  - [指定 Composefile](#指定-composefile)
 - [命令](#命令)
   - [启动项目](#启动项目)
   - [停止项目](#停止项目)
@@ -36,13 +37,13 @@ chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
 
-## 配置模板
+## Composefile
 
 ### 拉取镜像运行服务
 
 编写 `docker-compose.yml` 文件：
 
-```yml
+```yaml
 version: "3"
 services: 
 
@@ -79,7 +80,7 @@ ENTRYPOINT [ "node", "main" ]
 
 编写 `docker-compose.yml` 文件：
 
-```yml
+```yaml
 version: "3"
 services: 
 
@@ -94,6 +95,21 @@ services:
 
 ```bash
 docker-compose up --build
+```
+
+### 指定 Composefile
+
+```yaml
+version: "3"
+services: 
+
+  app:
+    build:
+      context: .
+      dockerfile: Default_Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
 ```
 
 ## 命令
