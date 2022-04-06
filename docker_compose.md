@@ -5,6 +5,7 @@
 - [Composefile](#Composefile)
   - [拉取镜像运行服务](#拉取镜像运行服务)
   - [构建镜像运行服务](#构建镜像运行服务)
+  - [指定镜像名称](#指定镜像名称)
   - [指定 Composefile](#指定-composefile)
 - [命令](#命令)
   - [启动项目](#启动项目)
@@ -95,6 +96,20 @@ services:
 
 ```bash
 docker-compose up --build
+```
+
+### 指定镜像名称
+
+```yaml
+version: "3"
+services: 
+
+  app:
+    build: .
+    image: myapp:stable
+    ports:
+      - "3000:3000"
+    restart: always
 ```
 
 ### 指定 Composefile
