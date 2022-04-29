@@ -4,4 +4,4 @@
 
 - [Docker](docker.md)
 - [Docker Compose](docker_compose.md)
-- [Rancher](rancher.md)
+- [K3S/Rancher](k3s_rancher.md)
