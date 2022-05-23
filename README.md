@@ -5,3 +5,4 @@
 - [Docker](docker.md)
 - [Docker Compose](docker_compose.md)
 - [K3S/Rancher](k3s_rancher.md)
+- [Minikube](minikube.md)
