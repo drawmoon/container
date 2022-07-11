@@ -5,6 +5,7 @@
   - [Manjaro](#manjaro)
   - [镜像加速](#镜像加速)
     - [Linux](#linux)
+    - [Snap](#snap)
 - [使用镜像](#使用镜像)
   - [查看镜像](#查看镜像)
   - [搜索镜像](#搜索镜像)
@@ -110,6 +111,39 @@ sudo usermod -aG docker $USER
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+```
+
+执行 `info` 指令可以检查配置是否生效：
+
+```bash
+docker info
+```
+
+在输出中找到 `Registry`：
+
+```bash
+Server:
+  Registry: http://f1361db2.m.daocloud.io
+```
+
+#### Snap
+
+> 如果 Docker 是通过 `snap` 安装的，`daemon.json` 所在位置会有所不同
+
+修改 `/var/snap/docker/current/config/daemon.json` 文件，在 `registry-mirrors` 中加入镜像市场：
+
+```bash
+{
+  "registry-mirrors": [
+    "http://f1361db2.m.daocloud.io"
+  ]
+}
+```
+
+重启 Docker 服务
+
+```bash
+sudo snap restart docker
 ```
 
 执行 `info` 指令可以检查配置是否生效：
