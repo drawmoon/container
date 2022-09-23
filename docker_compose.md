@@ -20,6 +20,7 @@
   - [恢复服务](#恢复服务)
   - [删除服务](#删除服务)
   - [构建项目](#构建项目)
+- [网络](#网络)
 
 ## 简介
 
@@ -245,4 +246,19 @@ docker-compose build nginx
 
 ```bash
 docker-compose build --no-cache
+```
+
+## 网络
+
+### 使用主机网络
+
+```yaml
+version: "3"
+services:
+
+  app:
+    build: .
+    image: myapp
+    restart: always
+    network_mode: host
 ```
