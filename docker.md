@@ -37,6 +37,7 @@
   - [创建网络](#创建网络)
   - [删除网络](#删除网络)
   - [容器互联](#容器互联)
+  - [使用主机网络](#使用主机网络)
 - [其他命令](#其他命令)
   - [查看磁盘使用情况](#查看磁盘使用情况)
   - [清理磁盘](#清理磁盘)
@@ -601,6 +602,12 @@ docker network rm <网络>
 docker run --network my-network --name pg-server -d postgres
 
 docker run --network my-network --name my-web -e DB_HOST=pg-server -d web
+```
+
+### 使用主机网络
+
+```bash
+docker run --net=host --name someapp -d myapp
 ```
 
 ## 其他命令
